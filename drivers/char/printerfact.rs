@@ -33,13 +33,13 @@ impl FileOpener<()> for RustFile {
 impl FileOperations for RustFile {
     type Wrapper = Box<Self>;
 
-    kernel::declare_file_operations!();
-
     fn read(&self, file: &File, data: &mut UserSlicePtrWriter, _offset: u64) -> KernelResult<usize> {
         pr_info!("user attempted to read from the file!");
 
         Ok(0)
-    } 
+    }
+
+    kernel::declare_file_operations!();
 }
 
 struct PrinterFacts {
