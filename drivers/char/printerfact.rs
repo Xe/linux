@@ -9,7 +9,7 @@
 use alloc::boxed::Box;
 use core::pin::Pin;
 use kernel::prelude::*;
-use kernel::{chrdev, cstr, file_operations::{FileOperations, File}, user_ptr::UserSlicePtrWriter};
+use kernel::{chrdev, cstr, file_operations::{FileOperations, FileOpener, File}, user_ptr::UserSlicePtrWriter};
 
 module! {
     type: PrinterFacts,
@@ -23,15 +23,17 @@ module! {
 
 struct RustFile;
 
+impl FileOpener<()> for RustFile {
+    fn open(_ctx: &()) -> KernelResult<Self::Wrapper> {
+        pr_info!("rust file was opened!\n");
+        Ok(Box::try_new(Self)?)
+    }
+}
+
 impl FileOperations for RustFile {
     type Wrapper = Box<Self>;
 
     kernel::declare_file_operations!();
-
-    fn open() -> KernelResult<Self::Wrapper> {
-        pr_info!("rust file was opened!");
-        Ok(Box::try_new(Self)?)
-    }
 
     fn read(&self, file: &File, data: &mut UserSlicePtrWriter, _offset: u64) -> KernelResult<usize> {
         pr_info!("user attempted to read from the file!");
