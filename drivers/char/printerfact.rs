@@ -27,12 +27,12 @@ impl FileOperations for RustFile {
     type Wrapper = Box<Self>;
 
     fn open() -> KernelResult<Self::Wrapper> {
-        println!("rust file was opened!");
+        pr_info!("rust file was opened!");
         Ok(Box::try_new(Self)?)
     }
 
     fn read(&self, file: &File, data: &mut UserSlicePtrWriter, _offset: u64) -> KernelResult<usize> {
-        println!("user attempted to read from the file!");
+        pr_info!("user attempted to read from the file!");
 
         Ok(0)
     } 
@@ -45,8 +45,8 @@ struct PrinterFacts {
 
 impl KernelModule for PrinterFacts {
     fn init() -> KernelResult<Self> {
-        println!("printerfacts initialized");
-        println!("Am I built-in? {}", !cfg!(MODULE));
+        pr_info!("printerfacts initialized");
+        pr_info!("Am I built-in? {}", !cfg!(MODULE));
 
         let mut chrdev_reg =
             chrdev::Registration::new_pinned(cstr!("printerfact"), 0, &THIS_MODULE)?;
@@ -62,7 +62,7 @@ impl KernelModule for PrinterFacts {
 
 impl Drop for PrinterFacts {
     fn drop(&mut self) {
-        println!("My message is {}", self.message);
-        println!("printerfacts exiting");
+        pr_info!("My message is {}", self.message);
+        pr_info!("printerfacts exiting");
     }
 }

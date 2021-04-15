@@ -502,9 +502,7 @@ config PRINTERFACT
 	tristate "Printer facts support"
 	default n
 	help
-	  This option builds an example module written in Rust.
-
-	  To compile this as a module, choose M here:
-	  the module will be called rust_example.
+    This option allows you to experience the glory that is
+    printer facts right from your filesystem.
 
 	  If unsure, say N.
