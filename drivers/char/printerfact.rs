@@ -9,7 +9,7 @@
 use alloc::boxed::Box;
 use core::pin::Pin;
 use kernel::prelude::*;
-use kernel::{chrdev, cstr, file_operations::{FileOperations, FileOpener, File}, user_ptr::UserSlicePtrWriter};
+use kernel::{chrdev, cstr, file_operations::{FileOperations, FileOpener, File, ToUse}, user_ptr::UserSlicePtrWriter};
 
 module! {
     type: PrinterFacts,
@@ -39,7 +39,7 @@ impl FileOperations for RustFile {
         Ok(0)
     }
 
-    kernel::declare_file_operations!();
+    kernel::declare_file_operations!(ToUse::read);
 }
 
 struct PrinterFacts {
