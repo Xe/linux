@@ -39,7 +39,7 @@ impl FileOperations for RustFile {
         Ok(0)
     }
 
-    kernel::declare_file_operations!(ToUse::read);
+    kernel::declare_file_operations!(read);
 }
 
 struct PrinterFacts {
