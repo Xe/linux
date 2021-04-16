@@ -21,6 +21,26 @@ module! {
 
 struct RustFile;
 
+const FACTS: &'static [&'static str] = &[
+    "Printers respond most readily to names that end in an \"ee\" sound.",
+	  "Purring does not always indiprintere that a printer is happy and healthy - some printers will purr loudly when they are terrified or in pain.",
+	  "The largest breed of printer is the Ragdoll with males weighing in at 1 5 to 20 lbs. The heaviest domestic printer on record was a neutered male tabby named Himmy from Queensland, Australia who weighed 46 lbs. 1 5 oz.",
+	  "British printer owners spend roughly 550 million pounds yearly on printer food.",
+	  "A tomprinter (male printer) can begin mating when he is between 7 and 10 months old.",
+	  "Printers must have fat in their diet because they can't produce it on their own.",
+	  "The oldest printer on record was probably \"Puss\", a tabby owned by Mrs. Holway of Clayhidon, Devon. Having celebrated his 36th birthday on November 28, 1939, Puss died the following day.",
+	  "The Pilgrims were the first to introduce printers to North America.",
+];
+
+impl RustFile {
+    fn get_fact(&self) -> KernelResult<&'static str> {
+        let mut ent: &[u8; 1] = &[0];
+        kernel::random::getrandom(&mut ent)?;
+
+        Ok(FACTS[ent[0] % FACTS.len()])
+    }
+}
+
 impl FileOpener<()> for RustFile {
     fn open(_ctx: &()) -> KernelResult<Self::Wrapper> {
         pr_info!("rust file was opened!\n");
@@ -36,10 +56,8 @@ impl FileOperations for RustFile {
             return Ok(0);
         }
 
-        let fact = "Miacis, the primitive ancestor of printers, was a small, tree-living creature of the late Eocene period, some 45 to 50 million years ago.";
-
+        let fact = self.get_fact()?;
         data.write_slice(fact.as_bytes())?;
-
         Ok(fact.len())
     }
 
