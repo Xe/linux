@@ -32,15 +32,15 @@ impl FileOperations for RustFile {
     type Wrapper = Box<Self>;
 
     fn read(&self, _file: &File, data: &mut UserSlicePtrWriter, offset: u64) -> KernelResult<usize> {
-        pr_info!("user attempted to read from the file!");
-
         if offset != 0 {
             return Ok(0);
         }
 
         let fact = "Miacis, the primitive ancestor of printers, was a small, tree-living creature of the late Eocene period, some 45 to 50 million years ago.";
 
-        data.write_slice(fact.as_bytes())
+        data.write_slice(fact.as_bytes())?;
+
+        Ok(fact.len())
     }
 
     kernel::declare_file_operations!(read);
