@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0
 
-//! Rust example module
-
 #![no_std]
 #![feature(allocator_api, global_asm)]
 #![feature(test)]
@@ -9,13 +7,13 @@
 use alloc::boxed::Box;
 use core::pin::Pin;
 use kernel::prelude::*;
-use kernel::{chrdev, cstr, file_operations::{FileOperations, FileOpener, File, ToUse}, user_ptr::UserSlicePtrWriter};
+use kernel::{chrdev, cstr, file_operations::{FileOperations, FileOpener, File}, user_ptr::UserSlicePtrWriter};
 
 module! {
     type: PrinterFacts,
     name: b"printerfacts",
     author: b"Christine Dodrill <me@christine.website>",
-    description: b"/dev/printerfacts support because I can",
+    description: b"/dev/printerfact support because I can",
     license: b"GPL v2",
     params: {
     },
@@ -33,8 +31,12 @@ impl FileOpener<()> for RustFile {
 impl FileOperations for RustFile {
     type Wrapper = Box<Self>;
 
-    fn read(&self, _file: &File, data: &mut UserSlicePtrWriter, _offset: u64) -> KernelResult<usize> {
+    fn read(&self, _file: &File, data: &mut UserSlicePtrWriter, offset: u64) -> KernelResult<usize> {
         pr_info!("user attempted to read from the file!");
+
+        if offset != 0 {
+            return Ok(0);
+        }
 
         let fact = "Miacis, the primitive ancestor of printers, was a small, tree-living creature of the late Eocene period, some 45 to 50 million years ago.";
 
