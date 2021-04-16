@@ -34,10 +34,10 @@ const FACTS: &'static [&'static str] = &[
 
 impl RustFile {
     fn get_fact(&self) -> KernelResult<&'static str> {
-        let mut ent: &[u8; 1] = &[0];
+        let mut ent = [0u8; 1];
         kernel::random::getrandom(&mut ent)?;
 
-        Ok(FACTS[ent[0] % FACTS.len()])
+        Ok(FACTS[ent[0] as usize % FACTS.len()])
     }
 }
 
