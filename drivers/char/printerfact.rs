@@ -38,16 +38,13 @@ impl FileOperations for RustFile {
 
         let fact = "Miacis, the primitive ancestor of printers, was a small, tree-living creature of the late Eocene period, some 45 to 50 million years ago.";
 
-        data.write_slice(fact.as_bytes())?;
-
-        Ok(fact.len())
+        data.write_slice(fact.as_bytes())
     }
 
     kernel::declare_file_operations!(read);
 }
 
 struct PrinterFacts {
-    message: String,
     _chrdev: Pin<Box<chrdev::Registration<2>>>,
 }
 
@@ -62,7 +59,6 @@ impl KernelModule for PrinterFacts {
         chrdev_reg.as_mut().register::<RustFile>()?;
 
         Ok(PrinterFacts {
-            message: "Hello world!".to_owned(),
             _chrdev: chrdev_reg,
         })
     }
@@ -70,7 +66,6 @@ impl KernelModule for PrinterFacts {
 
 impl Drop for PrinterFacts {
     fn drop(&mut self) {
-        pr_info!("My message is {}", self.message);
         pr_info!("printerfacts exiting");
     }
 }
